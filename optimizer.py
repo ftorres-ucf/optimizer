@@ -1,13 +1,15 @@
 #!/usr/bin/python3.7
 from datetime import datetime
-from datetime import time
+from datetime import time as dtime
 import subprocess
+import time
 
 file_path = "../RT_FRB/controller.py"
 
 opt_param = [
     # Digifil
     {
+        "name": "Digifil",
         "line": 454, 
         "change_pos": 3,
         "starting_param": 1,
@@ -17,6 +19,7 @@ opt_param = [
     },
     # Candmaker
     {
+        "name": "candmaker",
         "line": 529,
         "change_pos": 5,
         "starting_param": 1,
@@ -26,7 +29,7 @@ opt_param = [
     }
 ]
 
-hour_limits = [time(12,0,0), time(2,0,0)]
+hour_limits = [dtime(13,00,00), dtime(14,00,0)]
 
 
 
@@ -37,13 +40,13 @@ run = False
 while not quit:
     now = datetime.now()
 
-    if hour_limits[1].hour < hour_limits[0].hour:
-        if now.hour >= hour_limits[0].hour or now.hour <= hour_limits[1].hour:
+    if hour_limits[1] < hour_limits[0]:
+        if now.time() >= hour_limits[0] or now.time() <= hour_limits[1]:
             run = True
         else:
             run = False
     else:
-        if now.hour >= hour_limits[0] and now.hour <= hour_limits[1].hour:
+        if now.time() >= hour_limits[0] and now.time() <= hour_limits[1]:
             run = True
         else:
             run = False
@@ -94,9 +97,12 @@ while not quit:
                     opt_param[param_index]["current_param"] += opt_param[param_index]["param_step"]
 
 
-        input(opt_param)
+        
         # Check for quit condition
-        if opt_param[-1]["current_param"] == opt_param[-1]["max_value"]:
+        if opt_param[-1]["current_param"] == opt_param[-1]["max_val"]:
             quit = True
         # Next iteration
+        
+    else:
+        time.sleep(3)
 
